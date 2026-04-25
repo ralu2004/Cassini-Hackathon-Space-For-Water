@@ -1,0 +1,110 @@
+
+TERRASIP
+Know Your Water. Explore Freely.
+────────────
+
+The smart bottle & app that finds drinkable water sources anywhere,
+powered by European satellite data — works completely offline.
+
+
+Cassini Hackathon 2026  |  Challenge #1: Equitable Access to Water
+Powered by Copernicus & Galileo
+
+◉ THE PROBLEM
+Access to safe drinking water is a fundamental human need, yet it remains one of the most unevenly distributed resources on the planet. 2.2 billion people worldwide lack access to safely managed drinking water. By 2030, half the global population will live in water-stressed areas. Climate change is accelerating this crisis with longer droughts, more destructive floods, and rising contamination from agricultural and industrial runoff.
+
+But there is a deeper problem hiding inside this crisis: the information gap.
+
+
+Current satellite water monitoring tools serve government agencies and research institutions. They require GIS expertise, powerful hardware, and specialized training. The person standing at a river bank, wondering “can I drink this?” has no way to tap into the orbital infrastructure already watching that exact water source from 786 kilometers above.
+◉ THE SOLUTION
+TerraSip is a smart bottle and mobile app ecosystem that translates Copernicus satellite data into a single, instant answer: is this water safe to drink?
+
+The App
+A mobile-first web application that uses Galileo GNSS to pinpoint your exact location, then cross-references it against the latest satellite-derived water quality data for nearby water bodies. The result is a simple, color-coded rating — Excellent, Good, Poor, or Unsafe — backed by a Water Quality Index (0–100) computed from chlorophyll-a concentration, turbidity levels, dissolved organic matter, atmospheric pollution deposition, and precipitation anomalies. Users also see an interactive map of nearby sources, real-time contamination alerts, historical quality trends, and plain-language explanations of why a source is rated the way it is.
+
+The Smart Bottle
+A companion hardware device — a water bottle with an integrated Galileo GPS module, capacitive water sensor, and BLE transmitter built into a food-grade silicone cap. When you fill the bottle from any source, the sensor detects the water, the GPS tags your precise coordinates, and the bottle sends a query to your phone via Bluetooth. The app looks up the safety rating from pre-cached satellite data. No internet needed. No chemical test strips. Just fill, and know.
+
+Offline-First Architecture
+The critical innovation is that the heavy satellite processing happens before you leave, not when you need water. Before a trip, the app downloads a lightweight water risk map for your route or region (10–50 MB per area). On the road, the phone performs a local spatial query against the cached data using only Galileo positioning. The system works entirely offline, syncing fresh satellite passes opportunistically when connectivity returns.
+◉ HOW WE USE COPERNICUS & GALILEO
+Sentinel-2 MSI (10–20m resolution): The primary water quality sensor. Band ratios detect chlorophyll-a (algal bloom indicator), turbidity (sediment contamination), total suspended matter, and colored dissolved organic matter. Processed using Sen2Cor for atmospheric correction and C2RCC for water quality retrieval. Revisit: every 5 days.
+
+Sentinel-3 OLCI (300m–1km): Complements Sentinel-2 for larger water bodies. Provides water color, CDOM concentration, and surface temperature measurements. Particularly valuable for coastal zones and large lakes where thermal pollution matters.
+
+Sentinel-5P TROPOMI: Detects atmospheric pollutants (NO₂, SO₂, aerosol) that deposit into water systems through precipitation, providing an indirect contamination signal that other water-focused sensors miss.
+
+C3S Climate Change Service: Historical precipitation and evapotranspiration reanalysis for drought detection and precipitation anomaly computation. Twenty-year baselines enable the system to flag when current conditions deviate significantly from the norm.
+
+CEMS Emergency Management Service: Real-time flood risk maps and emergency contamination alerts. When floodwater mixes with sewage or agricultural runoff, CEMS data triggers automatic safety downgrades for affected water bodies.
+
+Galileo GNSS: Sub-meter positioning accuracy on European territory. Essential for matching a user or bottle to a specific water body rather than a general area. The precision difference between GPS (~5m) and Galileo (~1m) can mean the difference between a safe spring and a contaminated drainage ditch 4 meters away.
+◉ WATER QUALITY INDEX PIPELINE
+TerraSip computes a standardized Water Quality Index (0–100) for each monitored water body using a multi-parameter weighted scoring system derived from satellite observations:
+
+NDWI (Normalized Difference Water Index): Computed from Sentinel-2 Bands 3 and 8. Confirms water presence and extent. Weight: 10%.
+Chlorophyll-a concentration: Estimated from Band 4/Band 3 ratio. Indicates biological activity and eutrophication. Weight: 25%.
+Turbidity: Derived from Band 4 reflectance. Measures water clarity and sediment load. Weight: 25%.
+CDOM / organic matter: Sentinel-2 blue/green band ratios detect dissolved organic compounds that indicate contamination. Weight: 15%.
+Atmospheric deposition risk: Sentinel-5P NO₂/SO₂ levels cross-referenced with precipitation. High pollution + recent rain = elevated contamination risk. Weight: 10%.
+Precipitation anomaly: C3S data compared against 20-year baselines. Drought conditions concentrate pollutants; flood conditions introduce sewage. Weight: 15%.
+
+Classification thresholds: 75–100 = Excellent (safe to drink), 50–74 = Good (treat before drinking), 25–49 = Poor (not recommended), 0–24 = Unsafe (do not drink). The system provides explainability for every rating, telling users which specific parameters drove the score down and what risks they imply.
+
+◉ MARKET OPPORTUNITY
+TerraSip operates at the intersection of three large and growing markets: outdoor recreation technology, water quality monitoring, and climate adaptation infrastructure.
+
+Total Addressable Market
+Outdoor recreation: The European outdoor recreation market is worth €58 billion annually, with 200+ million Europeans participating in hiking, camping, and adventure travel. Water safety is a universal concern on any multi-day trip, yet no product currently addresses it with satellite intelligence.
+
+Water quality monitoring: The global water quality monitoring market is projected to reach $7.2 billion by 2028. Current solutions are industrial (sensors, lab testing) or institutional (government monitoring programs). TerraSip opens a consumer segment that doesn’t exist yet.
+
+Humanitarian and development: The global water, sanitation, and hygiene (WASH) sector represents $15+ billion in annual funding from governments, multilateral organizations, and NGOs. Water quality information is consistently identified as a critical gap.
+
+Target Segments
+Primary — Outdoor Enthusiasts (B2C): Hikers, backpackers, road trippers, adventure travelers. 200M+ in Europe alone. These users already spend on GPS devices, water filtration systems, and outdoor apps. TerraSip integrates into their existing gear ecosystem as the intelligence layer they’re missing.
+
+Secondary — Humanitarian & Development (B2B/B2G): NGOs (UNHCR, Red Cross, MSF), development agencies, disaster response teams. These organizations need water quality intelligence at scale in low-infrastructure environments — exactly what TerraSip’s offline-first architecture is designed for.
+
+Tertiary — Municipal Utilities & Government (B2G): Local and national water authorities who need community-level water quality data. TerraSip’s aggregated, anonymized user data creates a crowdsourced water quality network that complements their existing monitoring infrastructure.
+◉ BUSINESS MODEL
+TerraSip generates revenue through four channels: software subscriptions, hardware sales, government contracts, and data licensing.
+
+Software Tiers
+
+
+Hardware Revenue
+The TerraSip Smart Bottle cap retails at €29.99 (BOM cost: €16.30 at 1K units, dropping to ~€12 at 10K+). A bundle with 1-year Adventurer subscription sells at €39.99, driving both hardware margin and subscription conversion. At scale, the bottle is a acquisition tool: users who own the hardware convert to paid subscriptions at 3x the rate of app-only users.
+
+Data Licensing
+Aggregated, anonymized water quality data from TerraSip users creates a unique dataset: real-time, ground-truth-correlated water quality information at a resolution and freshness that no existing source provides. Buyers include agricultural commodity traders (crop yield prediction), insurance companies (water infrastructure risk), and climate research institutions. This becomes a meaningful revenue stream from Year 2 onward.
+
+Revenue Projections
+
+
+◉ COMPETITIVE LANDSCAPE
+No direct competitor exists. The market has two adjacent categories, and TerraSip occupies the gap between them:
+
+Satellite water monitoring platforms (institutional): Products like the Copernicus Water Quality Service, WaterWatch, and Global Flood Monitoring provide expert-grade analysis for government users. They require GIS expertise, deliver results in technical formats, and have no consumer interface. TerraSip is not competing with these — it is extending their reach to end users.
+
+Consumer water testing (hardware): Products like Lishtot TestDrop, HydroPoint, and TDS meters test water that’s already in your hand using electrochemical sensors. They cost €50–€200 per device, require the water to be in contact with the sensor, and provide only instantaneous readings with no geographic context. TerraSip works before you reach the water, uses satellite data that covers entire regions, and costs nothing for the basic service.
+
+◉ CHALLENGE #1 ALIGNMENT
+TerraSip is designed specifically to answer Challenge #1: Securing Equitable and Efficient Access to Water. Every element of the product maps to the challenge brief:
+
+“Equitable access for all” — A permanent free tier, offline-first design, and SMS delivery ensure that the person without piped water, without a testing lab, without GIS expertise receives the same quality of intelligence as a European city utility. Equity is not a feature — it’s the architecture.
+
+“Growing water scarcity intensified by climate change” — C3S climate data integration detects sources trending toward drought weeks before they fail, enabling proactive relocation to alternative sources. TerraSip turns reactive crisis response into anticipatory adaptation.
+
+“Uneven distribution” — The map creates a living atlas of drinkable water that grows with every satellite pass and every community report. The uneven distribution of information about water is as much the problem as the uneven distribution of water itself.
+
+“Efficient management” — The Organization and Government tiers aggregate individual water source data into regional dashboards. Authorities see which sources their population relies on, which are degrading, and where infrastructure investment yields the highest return.
+
+“Promote conservation” — When users see that a source is amber and trending red, they naturally shift to alternatives. TerraSip distributes consumption pressure across the watershed, functioning as a passive demand-management tool.
+
+“Leverage Copernicus and Galileo” — Sentinel-2 MSI, Sentinel-3 OLCI, Sentinel-5P TROPOMI, C3S, and CEMS for analysis. Galileo GNSS for the sub-meter positioning that makes the smart bottle work. Every core function depends on European space infrastructure.
+◉ IMPACT
+
+
+Beyond individual users, TerraSip generates a positive data feedback loop: every bottle fill, every source visit, every community report enriches the platform’s understanding of real-world water quality. This aggregated intelligence informs regional water policy, insurance risk models, agricultural planning, and climate adaptation strategies — creating value far beyond any single user’s experience.

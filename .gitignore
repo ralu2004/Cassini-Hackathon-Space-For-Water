@@ -1,0 +1,13 @@
+# Node
+node_modules/
+package-lock.json
+
+# Python
+venv/
+temp_venv/
+__pycache__/
+*.pyc
+
+# Environment & Config
+.env
+.DS_Store

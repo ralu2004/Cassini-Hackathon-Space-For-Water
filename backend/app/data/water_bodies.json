@@ -1,0 +1,9 @@
+[
+  {"id":"wb_somes_cluj","name":"Someșul Mic River","type":"river","lat":46.7773,"lon":23.5954},
+  {"id":"wb_tarnita","name":"Lake Tarnița","type":"lake","lat":46.7207,"lon":23.2579},
+  {"id":"wb_ghioroc","name":"Lake Ghioroc","type":"lake","lat":46.1548,"lon":21.5900},
+  {"id":"wb_herastrau","name":"Lake Herăstrău","type":"lake","lat":44.4759,"lon":26.0840},
+  {"id":"wb_arges","name":"Argeș River","type":"river","lat":44.4212,"lon":26.0378},
+  {"id":"wb_danube_giurgiu","name":"Danube River near Giurgiu","type":"river","lat":43.8937,"lon":25.9699},
+  {"id":"wb_dambovita","name":"Dâmbovița River","type":"river","lat":44.4328,"lon":26.1039}
+]
