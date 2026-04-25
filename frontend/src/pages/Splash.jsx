@@ -17,7 +17,7 @@ export default function Splash() {
           <img src="/terrasip-logo.png" alt="TerraSip logo" className="h-11 w-11 rounded-full bg-white/10 p-1" />
           <div>
             <h1 className="text-2xl font-bold tracking-[0.22em]">TERRASIP</h1>
-            <p className="text-green-200 text-sm">Know your water. Explore freely.</p>
+            <p className="text-green-200 text-sm">From space to your next sip.</p>
           </div>
         </div>
 
@@ -30,9 +30,7 @@ export default function Splash() {
             <br />
             better decisions.
           </p>
-          <p className="mt-2 text-sm text-white/65">
-            Satellite intelligence + location + bottle feedback in one simple mobile flow.
-          </p>
+          <p className="mt-2 text-sm text-white/65">See your world from above - decide what is safe below.</p>
           <div className="mt-4 grid grid-cols-3 gap-2 text-[11px]">
             <div className="chip rounded-xl p-2">
               <Satellite className="mx-auto mb-1 h-4 w-4 text-cyan-300" />

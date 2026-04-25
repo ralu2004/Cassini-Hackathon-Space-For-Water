@@ -7,6 +7,7 @@ import Details from "./pages/Details";
 import Scan from "./pages/Scan";
 import Profile from "./pages/Profile";
 import Project from "./pages/Project";
+import Bottle from "./pages/Bottle";
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
         <Route path="/map" element={<Map />} />
         <Route path="/details" element={<Details />} />
         <Route path="/scan" element={<Scan />} />
+        <Route path="/bottle" element={<Bottle />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/project" element={<Project />} />
       </Routes>

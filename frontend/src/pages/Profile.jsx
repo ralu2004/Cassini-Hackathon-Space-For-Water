@@ -25,8 +25,8 @@ export default function Profile() {
             <ProfileRow label="Recent scans" value="12 this week" />
           </div>
 
-          <button onClick={() => nav("/scan")} className="mt-6 w-full rounded-xl bg-green-400 py-3 font-semibold text-[#052015]">
-            Open bottle scan
+          <button onClick={() => nav("/bottle")} className="mt-6 w-full rounded-xl bg-green-400 py-3 font-semibold text-[#052015]">
+            Open bottle tab
           </button>
           <button onClick={() => nav("/project")} className="mt-3 w-full rounded-xl border border-white/20 bg-white/5 py-3 font-semibold">
             Open project overview

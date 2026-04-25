@@ -5,7 +5,7 @@ DATA_PATH = Path(__file__).resolve().parents[1] / "data" / "water_bodies.json"
 
 class GeoService:
     def __init__(self):
-        self.water_bodies = json.loads(DATA_PATH.read_text())
+        self.water_bodies = json.loads(DATA_PATH.read_text(encoding="utf-8"))
 
     @staticmethod
     def haversine_km(lat1, lon1, lat2, lon2):

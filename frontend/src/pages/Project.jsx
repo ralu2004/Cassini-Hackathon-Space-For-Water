@@ -54,7 +54,7 @@ export default function Project() {
             <img src="/terrasip-logo.png" alt="TerraSip logo" className="h-11 w-11 rounded-full bg-white/10 p-1" />
             <div>
               <h1 className="text-2xl font-bold tracking-[0.2em]">TERRASIP</h1>
-              <p className="text-sm text-green-200">Know Your Water. Explore Freely.</p>
+              <p className="text-sm text-green-200">From space to your next sip.</p>
             </div>
           </div>
           <p className="mt-4 text-white/80">

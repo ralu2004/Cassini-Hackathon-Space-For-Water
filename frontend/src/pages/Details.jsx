@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getRiskAnalysis, getWaterQuality } from "../lib/api";
-import { ArrowLeft, Navigation, Heart, Share2 } from "lucide-react";
+import { ArrowLeft, Navigation, Heart, Share2, FlaskConical } from "lucide-react";
 
 const fallback = { lat: 46.7712, lon: 23.6236 };
 
@@ -142,6 +142,7 @@ export default function Details() {
       <nav className="fixed bottom-0 left-0 right-0 glass-card rounded-t-3xl border-x-0 border-b-0 p-4 flex justify-around text-sm">
         <button onClick={() => nav("/map")} className="text-white/50">Map</button>
         <button onClick={() => nav("/scan")} className="text-white/50">Scan</button>
+        <button onClick={() => nav("/bottle")} className="text-white/50 inline-flex items-center gap-1"><FlaskConical className="h-4 w-4" />Bottle</button>
         <button className="text-green-300">Details</button>
         <button onClick={() => nav("/profile")} className="text-white/50">Profile</button>
       </nav>

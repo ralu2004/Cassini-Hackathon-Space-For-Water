@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import WaterMap from "../components/WaterMap";
 import { getWaterQuality } from "../lib/api";
-import { User, MapPinned, ScanSearch, Waves } from "lucide-react";
+import { User, MapPinned, ScanSearch, Waves, FlaskConical } from "lucide-react";
 
 const fallback = { lat: 46.7712, lon: 23.6236 };
 
@@ -73,7 +73,7 @@ export default function Map() {
           <img src="/terrasip-logo.png" alt="TerraSip logo" className="h-10 w-10 rounded-full bg-white/10 p-1" />
           <div>
             <h1 className="text-xl font-bold tracking-[0.2em]">TERRASIP</h1>
-            <p className="text-xs text-green-200">Nearby water intelligence</p>
+            <p className="text-xs text-green-200">From space to your next sip.</p>
           </div>
         </div>
         <button
@@ -136,6 +136,7 @@ export default function Map() {
       <nav className="glass-card rounded-t-3xl border-x-0 border-b-0 p-4 flex justify-around text-sm">
         <button className="text-green-300 inline-flex items-center gap-1"><MapPinned className="h-4 w-4" />Map</button>
         <button onClick={() => nav("/scan")} className="text-white/50 inline-flex items-center gap-1"><ScanSearch className="h-4 w-4" />Scan</button>
+        <button onClick={() => nav("/bottle")} className="text-white/50 inline-flex items-center gap-1"><FlaskConical className="h-4 w-4" />Bottle</button>
         <button onClick={() => nav("/profile")} className="text-white/50 inline-flex items-center gap-1"><User className="h-4 w-4" />Profile</button>
       </nav>
     </div>
