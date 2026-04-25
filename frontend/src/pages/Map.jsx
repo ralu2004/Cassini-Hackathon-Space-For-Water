@@ -67,7 +67,7 @@ export default function Map() {
   const status = quality?.class_name ?? (isLoading ? "SCANNING" : "UNKNOWN");
 
   return (
-    <div className="app-shell h-screen text-white flex flex-col overflow-hidden">
+    <div className="app-shell min-h-screen text-white flex flex-col overflow-y-auto">
       <header className="p-5 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <img src="/terrasip-logo.png" alt="TerraSip logo" className="h-10 w-10 rounded-full bg-white/10 p-1" />
@@ -84,9 +84,9 @@ export default function Map() {
         </button>
       </header>
 
-      <section className="flex-1 min-h-0 p-5 pt-2">
-        <div className="grid h-full min-h-0 gap-4 md:grid-cols-[minmax(0,1fr)_260px]">
-          <div className="h-[56vh] min-h-0 overflow-hidden rounded-[2rem] border border-white/10 md:h-full">
+      <section className="flex-1 p-5 pt-2">
+        <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_260px] md:items-start">
+          <div className="h-[56vh] min-h-[320px] overflow-hidden rounded-[2rem] border border-white/10 md:h-[62vh]">
             <WaterMap coords={coords} quality={quality} />
           </div>
 
@@ -133,7 +133,7 @@ export default function Map() {
         </div>
       </section>
 
-      <nav className="glass-card rounded-t-3xl border-x-0 border-b-0 p-4 flex justify-around text-sm">
+      <nav className="glass-card sticky bottom-0 rounded-t-3xl border-x-0 border-b-0 p-4 flex justify-around text-sm">
         <button className="text-green-300 inline-flex items-center gap-1"><MapPinned className="h-4 w-4" />Map</button>
         <button onClick={() => nav("/scan")} className="text-white/50 inline-flex items-center gap-1"><ScanSearch className="h-4 w-4" />Scan</button>
         <button onClick={() => nav("/bottle")} className="text-white/50 inline-flex items-center gap-1"><FlaskConical className="h-4 w-4" />Bottle</button>

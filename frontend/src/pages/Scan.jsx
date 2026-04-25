@@ -34,7 +34,7 @@ export default function Scan() {
   const status = wqi >= 75 ? "EXCELLENT" : wqi >= 50 ? "FAIR" : "POOR";
 
   return (
-    <div className="app-shell h-screen text-white flex flex-col items-center justify-between p-6">
+    <div className="app-shell min-h-screen text-white flex flex-col items-center gap-5 p-6 overflow-y-auto">
       <button onClick={() => nav("/map")} className="self-start rounded-xl border border-white/15 bg-white/5 p-2 text-white/80">
         <ArrowLeft className="h-5 w-5" />
       </button>
@@ -85,7 +85,7 @@ export default function Scan() {
       {state === "done" && (
         <button
           onClick={() => nav("/details")}
-          className="btn-primary w-full py-4 rounded-2xl font-bold"
+          className="btn-primary mt-auto w-full py-4 rounded-2xl font-bold"
         >
           <span className="inline-flex items-center gap-2">
             <Activity className="h-4 w-4" />
@@ -95,7 +95,7 @@ export default function Scan() {
       )}
 
       {state === "waiting" && (
-        <button onClick={detectWater} className="w-full rounded-2xl bg-white/10 py-4 font-semibold">
+        <button onClick={detectWater} className="mt-auto w-full rounded-2xl bg-white/10 py-4 font-semibold">
           Start scan
         </button>
       )}

@@ -5,14 +5,14 @@ export default function Splash() {
   const nav = useNavigate();
 
   return (
-    <div className="app-shell h-screen relative text-white overflow-hidden">
+    <div className="app-shell relative min-h-screen text-white overflow-y-auto">
       <img
         src="https://images.unsplash.com/photo-1501785888041-af3ef285b470"
         className="absolute inset-0 w-full h-full object-cover"
       />
       <div className="absolute inset-0 bg-gradient-to-b from-[#05110f]/45 via-[#05110f]/70 to-[#05110f]" />
 
-      <div className="relative h-full flex flex-col justify-between p-6">
+      <div className="relative min-h-screen flex flex-col justify-between gap-6 p-6">
         <div className="flex items-center gap-3">
           <img src="/terrasip-logo.png" alt="TerraSip logo" className="h-11 w-11 rounded-full bg-white/10 p-1" />
           <div>
