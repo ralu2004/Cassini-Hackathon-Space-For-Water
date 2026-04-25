@@ -1,79 +1,105 @@
-# Terra Sip — Smart Water Quality Detection MVP
+# TerraSip
 
-Mobile-first prototype that uses high-accuracy browser geolocation, a mock Copernicus/Galileo processing pipeline, and a FastAPI backend to classify nearby water as SAFE / CAUTION / UNSAFE.
+**From space to your next sip.**  
+See your world from above - decide what is safe below.
 
-## Why these EO sources
-- Sentinel-2 MSI is suitable for high-resolution water-quality indicators such as chlorophyll-a, turbidity, CDOM, DOC, and water color.
-- Sentinel-3 measures ocean/land colour and sea/land surface temperature, useful for water colour and temperature anomaly signals.
-- Sentinel-5P provides atmospheric pollution products such as NO2 and SO2, used here as contextual pollution proxies.
+TerraSip is a hackathon MVP that turns satellite-derived water signals into a simple safety experience for end users. It combines:
 
-This MVP uses deterministic synthetic data so the demo works without API keys. Replace `SatelliteService.fetch_features()` with Copernicus Data Space, Sentinel Hub, or CLMS Lake Water Quality calls later.
+- a FastAPI backend that computes a Water Quality Index (WQI),
+- a mobile-first React frontend with map, scan, details, and bottle views,
+- mock Copernicus/Galileo-style data to run fully without external API keys.
 
-## Folder structure
-```txt
-terra-sip/
-  backend/
-    app/api/routes.py
-    app/services/{geo_service,satellite_service,wqi_service}.py
-    app/models/schemas.py
-    app/data/water_bodies.json
-    train_model.py
-    requirements.txt
-  frontend/
-    src/App.jsx
-    src/components/*
-    src/lib/api.js
-  docker-compose.yml
-```
+## What is in the app
 
-## Run locally
+- **Map tab**: current source, WQI status, and nearby-water context.
+- **Scan tab**: bottle-like scan interaction with live scan state.
+- **Details tab**: water explanation breakdown, warnings, and recommendation.
+- **Bottle tab**: link/unlink bottle state and simulated live telemetry (fill level, temperature, conductivity, battery).
+- **Project tab**: hackathon narrative and impact framing.
 
-### Backend
+## Tech stack
+
+- **Backend**: FastAPI, Pydantic, deterministic mock EO features.
+- **Frontend**: React + Vite + Tailwind + Leaflet.
+- **Data**: local JSON water bodies with Romanian diacritics preserved via UTF-8 loading.
+
+## EO data rationale (mocked in MVP)
+
+- **Sentinel-2 MSI**: chlorophyll-a, turbidity, TSM, NDWI-like water presence indicators.
+- **Sentinel-3 OLCI**: water colour and temperature context.
+- **Sentinel-5P**: atmospheric NO2/SO2 proxy contribution.
+
+The current implementation uses synthetic deterministic values for demo reliability. Replace the synthetic generator in `backend/app/services/satellite_service.py` when integrating real data providers.
+
+## Local run
+
+### 1) Backend
 ```bash
 cd backend
 python -m venv .venv
+```
+
+Activate venv:
+
+- **Windows (PowerShell)**:
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+- **macOS/Linux**:
+```bash
 source .venv/bin/activate
+```
+
+Install and run:
+```bash
 pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 ```
 
-Open: http://localhost:8000/docs
+Backend docs: `http://localhost:8000/docs`
 
-### Frontend
+### 2) Frontend
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-Open: http://localhost:5173
+Frontend app: `http://localhost:5173`
 
-## API examples
+Optional environment override:
+```bash
+cp .env.example .env
+```
+Set `VITE_API_BASE_URL` if backend is not running at `http://127.0.0.1:8000`.
+
+## API quick examples
+
 ```bash
 curl "http://localhost:8000/water-quality?lat=46.77&lon=23.59"
 curl "http://localhost:8000/historical-trends?lat=46.77&lon=23.59"
+curl -X POST "http://localhost:8000/risk-analysis" -H "Content-Type: application/json" -d "{\"lat\":46.77,\"lon\":23.59}"
 ```
 
+## WQI ranges
+
+- `75-100`: Excellent / Safe
+- `50-74`: Good / Treat before drinking
+- `25-49`: Poor / Not recommended
+- `0-24`: Unsafe / Do not drink
+
+Score penalties consider turbidity, chlorophyll-a, suspended matter, NDWI confidence, atmospheric pollution proxies, temperature anomaly, and cloud uncertainty.
+
 ## Docker
+
 ```bash
 docker compose up --build
 ```
 
-Backend: http://localhost:8000  
-Frontend: http://localhost:5173
+- Backend: `http://localhost:8000`
+- Frontend: `http://localhost:5173`
 
-## WQI logic
-Weighted score from 0–100:
-- 75–100: SAFE / GOOD
-- 50–74: CAUTION / FAIR
-- 0–49: UNSAFE / POOR
+## Next integration step
 
-Penalties come from turbidity, chlorophyll-a, TSM, NDWI confidence, temperature anomaly, NO2/SO2 proxies, and cloud uncertainty.
-
-## Replace mock satellite data later
-In `backend/app/services/satellite_service.py`, replace the synthetic generator with:
-1. Sentinel-2 MSI water mask + turbidity/chlorophyll/TSM retrieval
-2. Sentinel-3 OLCI water colour + temperature product lookup
-3. Sentinel-5P NO2/SO2 contextual pollution lookup
-4. Spatial/temporal resampling to nearest water body
-5. Store in PostGIS for real geo queries
+To move beyond MVP mock data, replace `SatelliteService.fetch_features()` with real retrieval + resampling from Copernicus-compatible sources, then persist processed observations in a spatial database (for example PostGIS).
