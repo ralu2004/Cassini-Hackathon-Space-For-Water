@@ -6,6 +6,7 @@ export default function Scan() {
   const nav = useNavigate();
   const [state, setState] = useState("waiting");
   const [quality, setQuality] = useState(null);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const timer = setTimeout(() => detectWater(), 2000);
@@ -14,13 +15,18 @@ export default function Scan() {
 
   async function detectWater() {
     setState("scanning");
+    setError("");
 
-    const q = await getWaterQuality(46.77, 23.62);
-
-    setTimeout(() => {
-      setQuality(q);
-      setState("done");
-    }, 2000);
+    try {
+      const q = await getWaterQuality(46.77, 23.62);
+      setTimeout(() => {
+        setQuality(q);
+        setState("done");
+      }, 2000);
+    } catch {
+      setError("Could not complete scan. Please try again.");
+      setState("waiting");
+    }
   }
 
   const wqi = quality?.wqi ?? 96;
@@ -65,12 +71,20 @@ export default function Scan() {
         )}
       </div>
 
+      {error && <p className="text-sm text-red-300">{error}</p>}
+
       {state === "done" && (
         <button
           onClick={() => nav("/details")}
           className="w-full bg-green-500 text-black py-4 rounded-2xl font-bold"
         >
           View Details
+        </button>
+      )}
+
+      {state === "waiting" && (
+        <button onClick={detectWater} className="w-full rounded-2xl bg-white/10 py-4 font-semibold">
+          Start scan
         </button>
       )}
     </div>

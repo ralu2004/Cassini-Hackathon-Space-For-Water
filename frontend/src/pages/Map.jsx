@@ -9,19 +9,53 @@ export default function Map() {
   const nav = useNavigate();
   const [coords, setCoords] = useState(fallback);
   const [quality, setQuality] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   async function scan() {
+    setError("");
+    setIsLoading(true);
+
+    const loadWaterQuality = async (nextCoords) => {
+      setCoords(nextCoords);
+      const payload = await getWaterQuality(nextCoords.lat, nextCoords.lon);
+      setQuality(payload);
+    };
+
     navigator.geolocation?.getCurrentPosition(
       async (pos) => {
-        const next = { lat: pos.coords.latitude, lon: pos.coords.longitude };
-        setCoords(next);
-        setQuality(await getWaterQuality(next.lat, next.lon));
+        try {
+          const next = { lat: pos.coords.latitude, lon: pos.coords.longitude };
+          await loadWaterQuality(next);
+        } catch {
+          setError("Could not load water quality right now.");
+        } finally {
+          setIsLoading(false);
+        }
       },
       async () => {
-        setQuality(await getWaterQuality(fallback.lat, fallback.lon));
+        try {
+          await loadWaterQuality(fallback);
+          setError("Using fallback location. Enable GPS for better results.");
+        } catch {
+          setError("Could not load water quality right now.");
+        } finally {
+          setIsLoading(false);
+        }
       },
       { enableHighAccuracy: true, timeout: 7000 }
     );
+
+    if (!navigator.geolocation) {
+      try {
+        await loadWaterQuality(fallback);
+        setError("Geolocation is not available in this browser.");
+      } catch {
+        setError("Could not load water quality right now.");
+      } finally {
+        setIsLoading(false);
+      }
+    }
   }
 
   useEffect(() => {
@@ -29,7 +63,7 @@ export default function Map() {
   }, []);
 
   const wqi = quality?.wqi ?? "--";
-  const status = quality?.status ?? "SCANNING";
+  const status = quality?.class_name ?? (isLoading ? "SCANNING" : "UNKNOWN");
 
   return (
     <div className="h-screen bg-[#061211] text-white flex flex-col overflow-hidden">
@@ -69,6 +103,7 @@ export default function Map() {
               Galileo-like GPS
             </span>
           </div>
+          {error && <p className="mt-3 text-xs text-orange-300">{error}</p>}
         </div>
       </section>
 
@@ -81,14 +116,16 @@ export default function Map() {
       <section className="px-5 pb-5 space-y-3">
         <button
           onClick={scan}
-          className="w-full rounded-2xl bg-green-500 py-4 font-bold text-black"
+          disabled={isLoading}
+          className="w-full rounded-2xl bg-green-500 py-4 font-bold text-black disabled:cursor-not-allowed disabled:bg-green-700"
         >
-          Scan my location
+          {isLoading ? "Scanning..." : "Scan my location"}
         </button>
 
         <button
+          disabled={!quality}
           onClick={() => nav("/details")}
-          className="w-full rounded-2xl bg-white/10 py-4 font-semibold"
+          className="w-full rounded-2xl bg-white/10 py-4 font-semibold disabled:cursor-not-allowed disabled:opacity-40"
         >
           View water details
         </button>

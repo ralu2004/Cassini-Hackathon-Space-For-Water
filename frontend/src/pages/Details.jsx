@@ -8,13 +8,23 @@ export default function Details() {
   const nav = useNavigate();
   const [quality, setQuality] = useState(null);
   const [risk, setRisk] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     async function load() {
-      const q = await getWaterQuality(fallback.lat, fallback.lon);
-      const r = await getRiskAnalysis(fallback.lat, fallback.lon);
-      setQuality(q);
-      setRisk(r);
+      setIsLoading(true);
+      setError("");
+      try {
+        const q = await getWaterQuality(fallback.lat, fallback.lon);
+        const r = await getRiskAnalysis(fallback.lat, fallback.lon);
+        setQuality(q);
+        setRisk(r);
+      } catch {
+        setError("Could not load details. Please try again.");
+      } finally {
+        setIsLoading(false);
+      }
     }
     load();
   }, []);
@@ -43,10 +53,12 @@ export default function Details() {
       <section className="-mt-20 relative z-20 mx-5 rounded-[2rem] border border-white/10 bg-[#0d1c19]/95 p-5 shadow-2xl backdrop-blur">
         <div className="flex justify-between">
           <div>
-            <h1 className="text-2xl font-bold">
-              {quality?.nearest_water_body?.name || "Mountain Spring"}
-            </h1>
-            <p className="mt-1 text-sm text-white/50">0.4 km away</p>
+            <h1 className="text-2xl font-bold">{quality?.nearest_water_body?.name || "Water Source"}</h1>
+            <p className="mt-1 text-sm text-white/50">
+              {quality?.nearest_water_body?.distance_km != null
+                ? `${quality.nearest_water_body.distance_km.toFixed(1)} km away`
+                : "Distance unavailable"}
+            </p>
             <span className="mt-3 inline-block rounded-full bg-green-400/15 px-3 py-1 text-xs font-bold text-green-300">
               {status}
             </span>
@@ -63,9 +75,9 @@ export default function Details() {
         <div className="mt-6 space-y-3">
           <Row icon="💧" label="Water Quality" value={status} green />
           <Row icon="🌊" label="Flow Rate" value="1.2 L/min" />
-          <Row icon="🏔️" label="Source Type" value="Spring" />
+          <Row icon="🏔️" label="Source Type" value={quality?.nearest_water_body?.type || "Unknown"} />
           <Row icon="📍" label="Elevation" value="1,842 m" />
-          <Row icon="🕒" label="Last Updated" value="Today, now" />
+          <Row icon="🕒" label="Last Updated" value={quality?.generated_at ? "Moments ago" : "Pending"} />
         </div>
 
         <button
@@ -109,11 +121,15 @@ export default function Details() {
       <section className="mx-5 mt-5 rounded-[2rem] border border-white/10 bg-[#0d1c19] p-5 mb-24">
         <h2 className="font-bold">Warnings</h2>
         <div className="mt-3 space-y-2">
-          {(risk?.warnings?.length ? risk.warnings : ["No critical warnings detected."]).map((w, i) => (
-            <div key={i} className="rounded-2xl bg-white/5 p-3 text-sm text-white/65">
-              ⚠️ {w}
-            </div>
-          ))}
+          {isLoading && <div className="rounded-2xl bg-white/5 p-3 text-sm text-white/65">Loading analysis...</div>}
+          {error && <div className="rounded-2xl bg-red-500/15 p-3 text-sm text-red-200">{error}</div>}
+          {!isLoading &&
+            !error &&
+            (risk?.warnings?.length ? risk.warnings : ["No critical warnings detected."]).map((w, i) => (
+              <div key={i} className="rounded-2xl bg-white/5 p-3 text-sm text-white/65">
+                ⚠️ {w}
+              </div>
+            ))}
         </div>
       </section>
 
