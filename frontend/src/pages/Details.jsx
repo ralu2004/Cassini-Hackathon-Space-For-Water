@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getRiskAnalysis, getWaterQuality } from "../lib/api";
+import { ArrowLeft, Navigation, Heart, Share2 } from "lucide-react";
 
 const fallback = { lat: 46.7712, lon: 23.6236 };
 
@@ -33,7 +34,7 @@ export default function Details() {
   const status = wqi >= 75 ? "EXCELLENT" : wqi >= 50 ? "FAIR" : "POOR";
 
   return (
-    <div className="min-h-screen bg-[#061211] text-white">
+    <div className="app-shell min-h-screen text-white">
       <div className="relative h-72">
         <img
           src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee"
@@ -42,15 +43,17 @@ export default function Details() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/20 to-[#061211]" />
 
         <div className="relative z-10 flex justify-between p-5">
-          <button onClick={() => nav("/map")} className="text-2xl">‹</button>
+          <button onClick={() => nav("/map")} className="rounded-xl border border-white/15 bg-black/30 p-2">
+            <ArrowLeft className="h-5 w-5" />
+          </button>
           <div className="flex gap-3 text-xl">
-            <button>♡</button>
-            <button>↗</button>
+            <button className="rounded-xl border border-white/15 bg-black/30 p-2"><Heart className="h-5 w-5" /></button>
+            <button className="rounded-xl border border-white/15 bg-black/30 p-2"><Share2 className="h-5 w-5" /></button>
           </div>
         </div>
       </div>
 
-      <section className="-mt-20 relative z-20 mx-5 rounded-[2rem] border border-white/10 bg-[#0d1c19]/95 p-5 shadow-2xl backdrop-blur">
+      <section className="glass-card -mt-20 relative z-20 mx-5 rounded-[2rem] p-5">
         <div className="flex justify-between">
           <div>
             <h1 className="text-2xl font-bold">{quality?.nearest_water_body?.name || "Water Source"}</h1>
@@ -64,7 +67,7 @@ export default function Details() {
             </span>
           </div>
 
-          <div className="h-24 w-24 rounded-full border-[7px] border-green-400/70 grid place-items-center">
+          <div className="h-24 w-24 rounded-full border-[7px] border-green-300/80 grid place-items-center">
             <div className="text-center">
               <p className="text-2xl font-bold">{wqi}%</p>
               <p className="text-[10px] text-green-300">WQI</p>
@@ -86,13 +89,16 @@ export default function Details() {
             const lon = fallback.lon;
             window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}`, "_blank");
           }}
-          className="mt-6 w-full rounded-2xl bg-green-500 py-4 font-bold text-black"
+          className="btn-primary mt-6 w-full rounded-2xl py-4 font-bold"
         >
-          Get Directions
+          <span className="inline-flex items-center gap-2">
+            <Navigation className="h-4 w-4" />
+            Get Directions
+          </span>
         </button>
       </section>
 
-      <section className="mx-5 mt-5 rounded-[2rem] border border-white/10 bg-[#0d1c19] p-5">
+      <section className="glass-card mx-5 mt-5 rounded-[2rem] p-5">
         <h2 className="font-bold">Quality Breakdown</h2>
 
         <div className="mt-4 space-y-3">
@@ -104,7 +110,7 @@ export default function Details() {
         </div>
       </section>
 
-      <section className="mx-5 mt-5 rounded-[2rem] border border-green-300/20 bg-green-400/10 p-5">
+      <section className="mx-5 mt-5 rounded-[2rem] border border-green-300/30 bg-green-400/10 p-5">
         <div className="flex gap-3">
           <div className="text-3xl">💧</div>
           <div>
@@ -118,7 +124,7 @@ export default function Details() {
         </div>
       </section>
 
-      <section className="mx-5 mt-5 rounded-[2rem] border border-white/10 bg-[#0d1c19] p-5 mb-24">
+      <section className="glass-card mx-5 mt-5 rounded-[2rem] p-5 mb-24">
         <h2 className="font-bold">Warnings</h2>
         <div className="mt-3 space-y-2">
           {isLoading && <div className="rounded-2xl bg-white/5 p-3 text-sm text-white/65">Loading analysis...</div>}
@@ -133,7 +139,7 @@ export default function Details() {
         </div>
       </section>
 
-      <nav className="fixed bottom-0 left-0 right-0 bg-[#0d1c19] border-t border-white/10 p-4 flex justify-around text-sm">
+      <nav className="fixed bottom-0 left-0 right-0 glass-card rounded-t-3xl border-x-0 border-b-0 p-4 flex justify-around text-sm">
         <button onClick={() => nav("/map")} className="text-white/50">Map</button>
         <button onClick={() => nav("/scan")} className="text-white/50">Scan</button>
         <button className="text-green-300">Details</button>

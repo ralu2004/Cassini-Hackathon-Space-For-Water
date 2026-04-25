@@ -4,15 +4,15 @@ export default function Profile() {
   const nav = useNavigate();
 
   return (
-    <div className="min-h-screen bg-[#061211] text-white p-6">
+    <div className="app-shell min-h-screen text-white p-6">
       <div className="mx-auto w-full max-w-lg">
         <button onClick={() => nav("/map")} className="mb-4 text-sm text-white/60">
           Back to map
         </button>
 
-        <div className="rounded-3xl border border-white/10 bg-[#0d1c19] p-6 shadow-2xl">
+        <div className="glass-card rounded-3xl p-6">
           <div className="flex items-center gap-4">
-            <div className="grid h-14 w-14 place-items-center rounded-2xl bg-green-500/20 text-2xl">👤</div>
+            <img src="/terrasip-logo.png" alt="TerraSip profile" className="h-14 w-14 rounded-2xl bg-white/10 p-1.5" />
             <div>
               <h1 className="text-xl font-bold">Explorer Profile</h1>
               <p className="text-sm text-white/55">MVP offline demo account</p>
@@ -25,8 +25,11 @@ export default function Profile() {
             <ProfileRow label="Recent scans" value="12 this week" />
           </div>
 
-          <button onClick={() => nav("/scan")} className="mt-6 w-full rounded-xl bg-white/10 py-3 font-semibold">
+          <button onClick={() => nav("/scan")} className="mt-6 w-full rounded-xl bg-green-400 py-3 font-semibold text-[#052015]">
             Open bottle scan
+          </button>
+          <button onClick={() => nav("/project")} className="mt-3 w-full rounded-xl border border-white/20 bg-white/5 py-3 font-semibold">
+            Open project overview
           </button>
         </div>
       </div>

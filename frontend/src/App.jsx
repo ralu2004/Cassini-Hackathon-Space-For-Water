@@ -6,6 +6,7 @@ import Map from "./pages/Map";
 import Details from "./pages/Details";
 import Scan from "./pages/Scan";
 import Profile from "./pages/Profile";
+import Project from "./pages/Project";
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
         <Route path="/details" element={<Details />} />
         <Route path="/scan" element={<Scan />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/project" element={<Project />} />
       </Routes>
     </BrowserRouter>
   );

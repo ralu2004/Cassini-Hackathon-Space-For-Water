@@ -3,19 +3,19 @@ import { useNavigate } from "react-router-dom";
 
 const slides = [
   {
-    icon: "🛰️",
+    icon: "🛰",
     title: "Satellite-powered water checks",
-    text: "TerraSip combines Copernicus satellite indicators with your location to estimate nearby water safety.",
+    text: "Fuse Copernicus signals with terrain and weather context to score local water risk.",
   },
   {
-    icon: "💧",
-    title: "Scan before you drink",
-    text: "Use your phone GPS or smart bottle companion mode to check water quality in seconds.",
+    icon: "📍",
+    title: "Smart map recommendations",
+    text: "Locate nearby sources, compare confidence, and pick safer refill points in seconds.",
   },
   {
-    icon: "🗺️",
-    title: "Find safer water nearby",
-    text: "See nearby water sources, risk alerts, and quality trends before choosing where to refill.",
+    icon: "🧪",
+    title: "Bottle + AI validation",
+    text: "Combine satellite prediction with bottle observations for clearer drink / avoid guidance.",
   },
 ];
 
@@ -30,7 +30,7 @@ export default function Onboarding() {
   }
 
   return (
-    <div className="min-h-screen bg-[#061211] text-white flex flex-col justify-between p-6">
+    <div className="app-shell min-h-screen text-white flex flex-col justify-between p-6">
       <button
         onClick={() => nav("/map")}
         className="self-end text-sm text-white/50"
@@ -39,17 +39,25 @@ export default function Onboarding() {
       </button>
 
       <div className="flex-1 flex flex-col items-center justify-center text-center">
-        <div className="h-56 w-56 rounded-full bg-green-500/10 border border-green-300/20 flex items-center justify-center text-7xl shadow-[0_0_60px_rgba(74,222,128,.18)]">
+        <div className="glass-card h-56 w-56 rounded-[2rem] flex items-center justify-center text-7xl shadow-[0_0_60px_rgba(74,222,128,.18)]">
           {slide.icon}
         </div>
 
-        <h1 className="mt-10 text-3xl font-bold leading-tight">
+        <h1 className="mt-10 text-3xl font-bold leading-tight max-w-sm">
           {slide.title}
         </h1>
 
-        <p className="mt-4 text-white/60 leading-relaxed max-w-xs">
+        <p className="mt-4 text-white/65 leading-relaxed max-w-xs">
           {slide.text}
         </p>
+
+        {index === slides.length - 1 && (
+          <img
+            src="/terrasip-app-reference.png"
+            alt="TerraSip app concept"
+            className="mt-5 h-24 rounded-xl border border-white/15 object-cover opacity-80"
+          />
+        )}
 
         <div className="flex gap-2 mt-8">
           {slides.map((_, i) => (
@@ -65,7 +73,7 @@ export default function Onboarding() {
 
       <button
         onClick={next}
-        className="bg-green-500 text-black py-4 rounded-2xl font-bold"
+        className="bg-green-400 text-[#052015] py-4 rounded-2xl font-bold"
       >
         {index === slides.length - 1 ? "Open TerraSip" : "Next"}
       </button>

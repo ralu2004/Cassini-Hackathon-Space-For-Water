@@ -1,46 +1,65 @@
 import { useNavigate } from "react-router-dom";
+import { Satellite, Droplets, ShieldCheck } from "lucide-react";
 
 export default function Splash() {
   const nav = useNavigate();
 
   return (
-    <div className="h-screen relative text-white overflow-hidden">
-
-      {/* Background image */}
+    <div className="app-shell h-screen relative text-white overflow-hidden">
       <img
         src="https://images.unsplash.com/photo-1501785888041-af3ef285b470"
         className="absolute inset-0 w-full h-full object-cover"
       />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#05110f]/45 via-[#05110f]/70 to-[#05110f]" />
 
-      {/* Dark overlay */}
-      <div className="absolute inset-0 bg-black/50" />
-
-      {/* Content */}
       <div className="relative h-full flex flex-col justify-between p-6">
-
-        {/* Top */}
-        <div>
-          <h1 className="text-3xl font-bold tracking-widest">TERRASIP</h1>
-          <p className="text-green-300 text-sm">Know your water. Explore freely.</p>
+        <div className="flex items-center gap-3">
+          <img src="/terrasip-logo.png" alt="TerraSip logo" className="h-11 w-11 rounded-full bg-white/10 p-1" />
+          <div>
+            <h1 className="text-2xl font-bold tracking-[0.22em]">TERRASIP</h1>
+            <p className="text-green-200 text-sm">Know your water. Explore freely.</p>
+          </div>
         </div>
 
-        {/* Center logo */}
-        <div className="flex flex-col items-center justify-center text-center">
-          <div className="text-6xl mb-4">💧</div>
-          <p className="text-lg font-light">
-            Safe water. <br />
-            Better adventures.
+        <div className="glass-card rounded-[2rem] p-6 text-center soft-pulse">
+          <div className="mx-auto h-28 w-28 rounded-full border border-green-200/40 bg-white/5 p-2">
+            <img src="/terrasip-logo.png" alt="TerraSip symbol" className="h-full w-full rounded-full object-cover" />
+          </div>
+          <p className="mt-5 text-xl font-semibold leading-snug">
+            Safe water,
+            <br />
+            better decisions.
           </p>
+          <p className="mt-2 text-sm text-white/65">
+            Satellite intelligence + location + bottle feedback in one simple mobile flow.
+          </p>
+          <div className="mt-4 grid grid-cols-3 gap-2 text-[11px]">
+            <div className="chip rounded-xl p-2">
+              <Satellite className="mx-auto mb-1 h-4 w-4 text-cyan-300" />
+              Copernicus
+            </div>
+            <div className="chip rounded-xl p-2">
+              <Droplets className="mx-auto mb-1 h-4 w-4 text-blue-300" />
+              WQI Scoring
+            </div>
+            <div className="chip rounded-xl p-2">
+              <ShieldCheck className="mx-auto mb-1 h-4 w-4 text-green-300" />
+              Offline Ready
+            </div>
+          </div>
         </div>
 
-        {/* Bottom button */}
-        <button
-          onClick={() => nav("/onboarding")}
-          className="bg-green-500 text-black py-3 rounded-xl font-semibold"
-        >
-          Get Started
-        </button>
-
+        <div className="space-y-3">
+          <button onClick={() => nav("/onboarding")} className="btn-primary w-full rounded-xl py-3.5 font-semibold">
+            Get started
+          </button>
+          <button onClick={() => nav("/map")} className="btn-secondary w-full rounded-xl py-3.5 font-medium">
+            Preview live map
+          </button>
+          <button onClick={() => nav("/project")} className="w-full rounded-xl border border-green-300/35 bg-green-500/10 py-3.5 font-medium text-green-200">
+            View hackathon story
+          </button>
+        </div>
       </div>
     </div>
   );
