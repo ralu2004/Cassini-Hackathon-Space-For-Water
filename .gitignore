@@ -12,6 +12,9 @@ temp_venv/
 __pycache__/
 *.pyc
 
+# Local dev state (offline map toggles)
+backend/app/data/offline_maps_state.json
+
 # Environment & Config
 .env
 .DS_Store

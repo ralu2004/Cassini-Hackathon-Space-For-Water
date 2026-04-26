@@ -67,3 +67,14 @@ class HistoricalTrendsResponse(BaseModel):
     water_body_id: str
     direction: str
     points: List[TrendPoint]
+
+
+class OfflineMapRegion(BaseModel):
+    id: str
+    name: str
+    size_mb: int
+    downloaded: bool
+
+
+class OfflineMapsResponse(BaseModel):
+    regions: List[OfflineMapRegion]

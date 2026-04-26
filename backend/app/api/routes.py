@@ -1,15 +1,17 @@
 from datetime import datetime, timedelta, timezone
 import random
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, HTTPException, Query
 from app.models.schemas import *
 from app.services.geo_service import GeoService
 from app.services.satellite_service import SatelliteService
 from app.services.wqi_service import WQIService
+from app.services.offline_maps_service import OfflineMapsService
 
 router = APIRouter()
 geo = GeoService()
 sat = SatelliteService()
 wqi_service = WQIService()
+offline_maps = OfflineMapsService()
 
 @router.get("/location")
 def location(lat: float = Query(...), lon: float = Query(...)):
@@ -63,3 +65,22 @@ def historical_trends(lat: float = Query(...), lon: float = Query(...)):
         points.append(TrendPoint(date=day.isoformat(), wqi=score, turbidity_ntu=round(turb, 1), chlorophyll_a_mg_m3=round(chl, 1)))
     direction = "improving" if points[-1].wqi > points[0].wqi + 4 else "worsening" if points[-1].wqi < points[0].wqi - 4 else "stable"
     return HistoricalTrendsResponse(water_body_id=nearest["id"], direction=direction, points=points)
+
+
+@router.get("/offline-maps", response_model=OfflineMapsResponse)
+def list_offline_maps():
+    data = offline_maps.list_regions()
+    return OfflineMapsResponse(
+        regions=[OfflineMapRegion(**r) for r in data["regions"]]
+    )
+
+
+@router.post("/offline-maps/{region_id}/toggle", response_model=OfflineMapsResponse)
+def toggle_offline_map_region(region_id: str):
+    try:
+        data = offline_maps.toggle(region_id)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e)) from e
+    return OfflineMapsResponse(
+        regions=[OfflineMapRegion(**r) for r in data["regions"]]
+    )
