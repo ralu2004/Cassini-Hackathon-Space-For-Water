@@ -8,6 +8,8 @@ import Scan from "./pages/Scan";
 import Profile from "./pages/Profile";
 import Project from "./pages/Project";
 import Bottle from "./pages/Bottle";
+import Alerts from "./pages/Alerts";
+import OfflineMaps from "./pages/OfflineMaps";
 
 export default function App() {
   return (
@@ -20,6 +22,8 @@ export default function App() {
         <Route path="/details" element={<Details />} />
         <Route path="/scan" element={<Scan />} />
         <Route path="/bottle" element={<Bottle />} />
+        <Route path="/alerts" element={<Alerts />} />
+        <Route path="/offline-maps" element={<OfflineMaps />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/project" element={<Project />} />
       </Routes>

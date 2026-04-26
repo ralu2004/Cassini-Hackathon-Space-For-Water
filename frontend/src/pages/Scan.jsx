@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getWaterQuality } from "../lib/api";
+import { getLastCoords, setLastCoords } from "../lib/location";
 import { Activity, ArrowLeft, Smartphone } from "lucide-react";
 
 export default function Scan() {
@@ -9,29 +10,32 @@ export default function Scan() {
   const [quality, setQuality] = useState(null);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    const timer = setTimeout(() => detectWater(), 2000);
-    return () => clearTimeout(timer);
-  }, []);
-
   async function detectWater() {
     setState("scanning");
     setError("");
 
     try {
-      const q = await getWaterQuality(46.77, 23.62);
-      setTimeout(() => {
-        setQuality(q);
-        setState("done");
-      }, 2000);
+      const coords = getLastCoords();
+      setLastCoords(coords);
+      const q = await getWaterQuality(coords.lat, coords.lon);
+      setQuality(q);
+      setState("done");
     } catch {
-      setError("Could not complete scan. Please try again.");
+      setError("Could not complete scan. Is the API running?");
       setState("waiting");
     }
   }
 
-  const wqi = quality?.wqi ?? 96;
-  const status = wqi >= 75 ? "EXCELLENT" : wqi >= 50 ? "FAIR" : "POOR";
+  const wqi = quality?.wqi ?? 0;
+  const status = !quality
+    ? "—"
+    : wqi >= 75
+      ? "EXCELLENT"
+      : wqi >= 50
+        ? "GOOD"
+        : wqi >= 25
+          ? "POOR"
+          : "UNSAFE";
 
   return (
     <div className="app-shell min-h-screen text-white flex flex-col items-center gap-5 p-6 overflow-y-auto">
@@ -75,7 +79,9 @@ export default function Scan() {
                 <p className="text-green-300 text-sm">{status}</p>
               </div>
             </div>
-            <p className="text-white/60">Safe to drink based on satellite + bottle detection</p>
+            <p className="text-white/60 text-sm px-1">
+              {quality?.recommendation || "Satellite WQI for your last map location."}
+            </p>
           </>
         )}
       </div>

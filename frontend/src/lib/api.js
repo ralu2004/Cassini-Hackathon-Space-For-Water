@@ -37,3 +37,25 @@ export async function getTrends(lat, lon) {
   const res = await fetchWithTimeout(`${BASE}/historical-trends?lat=${lat}&lon=${lon}`);
   return parseJsonResponse(res);
 }
+
+export async function getLocation(lat, lon) {
+  const res = await fetchWithTimeout(`${BASE}/location?lat=${lat}&lon=${lon}`);
+  return parseJsonResponse(res);
+}
+
+export async function getHealth() {
+  const res = await fetchWithTimeout(`${BASE}/health`);
+  return parseJsonResponse(res);
+}
+
+export async function getOfflineMaps() {
+  const res = await fetchWithTimeout(`${BASE}/offline-maps`);
+  return parseJsonResponse(res);
+}
+
+export async function toggleOfflineMapRegion(regionId) {
+  const res = await fetchWithTimeout(`${BASE}/offline-maps/${encodeURIComponent(regionId)}/toggle`, {
+    method: "POST",
+  });
+  return parseJsonResponse(res);
+}

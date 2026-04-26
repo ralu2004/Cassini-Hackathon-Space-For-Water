@@ -51,14 +51,6 @@ export default function Onboarding() {
           {slide.text}
         </p>
 
-        {index === slides.length - 1 && (
-          <img
-            src="/terrasip-app-reference.png"
-            alt="TerraSip app concept"
-            className="mt-5 h-24 rounded-xl border border-white/15 object-cover opacity-80"
-          />
-        )}
-
         <div className="flex gap-2 mt-8">
           {slides.map((_, i) => (
             <span

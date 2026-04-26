@@ -1,9 +1,17 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getRiskAnalysis, getWaterQuality } from "../lib/api";
-import { ArrowLeft, Navigation, Heart, Share2, FlaskConical } from "lucide-react";
+import { getLastCoords } from "../lib/location";
+import { ArrowLeft, Navigation, Heart, Share2, FlaskConical, ShieldCheck, AlertTriangle } from "lucide-react";
 
-const fallback = { lat: 46.7712, lon: 23.6236 };
+function formatGeneratedAt(iso) {
+  if (!iso) return "—";
+  try {
+    return new Date(iso).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
+  } catch {
+    return iso;
+  }
+}
 
 export default function Details() {
   const nav = useNavigate();
@@ -17,8 +25,9 @@ export default function Details() {
       setIsLoading(true);
       setError("");
       try {
-        const q = await getWaterQuality(fallback.lat, fallback.lon);
-        const r = await getRiskAnalysis(fallback.lat, fallback.lon);
+        const coords = getLastCoords();
+        const q = await getWaterQuality(coords.lat, coords.lon);
+        const r = await getRiskAnalysis(coords.lat, coords.lon);
         setQuality(q);
         setRisk(r);
       } catch {
@@ -31,7 +40,30 @@ export default function Details() {
   }, []);
 
   const wqi = quality?.wqi ?? 98;
-  const status = wqi >= 75 ? "EXCELLENT" : wqi >= 50 ? "FAIR" : "POOR";
+  const status =
+    wqi >= 75 ? "EXCELLENT" : wqi >= 50 ? "GOOD" : wqi >= 25 ? "POOR" : "UNSAFE";
+
+  const features = quality?.features ?? {};
+  const chlorophyll = Number(features.chlorophyll_a_mg_m3 ?? 4.1);
+  const turbidity = Number(features.turbidity_ntu ?? 2.4);
+  const no2 = Number(features.no2_mol_m2 ?? 0);
+
+  const rate = (score) =>
+    score >= 80 ? "Excellent" : score >= 60 ? "Good" : score >= 40 ? "Fair" : "Poor";
+
+  const bacteriaScore = Math.max(0, 100 - chlorophyll * 6);
+  const virusScore = Math.max(0, 100 - chlorophyll * 4 - turbidity * 4);
+  const chemicalsScore = Math.max(0, 100 - Math.min(90, (no2 / 0.00028) * 85));
+  const turbidityScore = Math.max(0, 100 - turbidity * 8);
+
+  const categories = [
+    { key: "Bacteria", value: rate(bacteriaScore), score: bacteriaScore },
+    { key: "Viruses", value: rate(virusScore), score: virusScore },
+    { key: "Chemicals", value: rate(chemicalsScore), score: chemicalsScore },
+    { key: "Turbidity", value: rate(turbidityScore), score: turbidityScore },
+  ];
+
+  const lowestCategory = categories.reduce((a, b) => (a.score < b.score ? a : b));
 
   return (
     <div className="app-shell min-h-screen text-white">
@@ -80,14 +112,13 @@ export default function Details() {
           <Row icon="🌊" label="Flow Rate" value="1.2 L/min" />
           <Row icon="🏔️" label="Source Type" value={quality?.nearest_water_body?.type || "Unknown"} />
           <Row icon="📍" label="Elevation" value="1,842 m" />
-          <Row icon="🕒" label="Last Updated" value={quality?.generated_at ? "Moments ago" : "Pending"} />
+          <Row icon="🕒" label="Last Updated" value={formatGeneratedAt(quality?.generated_at)} />
         </div>
 
         <button
           onClick={() => {
-            const lat = fallback.lat;
-            const lon = fallback.lon;
-            window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}`, "_blank");
+            const c = quality?.coordinates || getLastCoords();
+            window.open(`https://www.google.com/maps/dir/?api=1&destination=${c.lat},${c.lon}`, "_blank");
           }}
           className="btn-primary mt-6 w-full rounded-2xl py-4 font-bold"
         >
@@ -99,14 +130,42 @@ export default function Details() {
       </section>
 
       <section className="glass-card mx-5 mt-5 rounded-[2rem] p-5">
-        <h2 className="font-bold">Quality Breakdown</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="font-bold">Quality Breakdown</h2>
+          <span className="text-xs text-white/45">Inferred from satellites</span>
+        </div>
+
+        <div className="mt-4 space-y-3">
+          {categories.map((c) => (
+            <CategoryRow key={c.key} label={c.key} value={c.value} />
+          ))}
+        </div>
+
+        <div className="mt-5 rounded-2xl bg-white/5 p-3 text-xs text-white/65">
+          Lowest indicator: <span className="text-white">{lowestCategory.key}</span>{" "}
+          ({lowestCategory.value.toLowerCase()}).{" "}
+          {lowestCategory.key === "Chemicals"
+            ? "Sentinel-5P shows elevated atmospheric pollution near this region."
+            : lowestCategory.key === "Turbidity"
+            ? "Sentinel-2 reflectance suggests slightly cloudy water — consider filtering."
+            : lowestCategory.key === "Bacteria"
+            ? "Chlorophyll-a is mildly elevated — possible biological activity."
+            : "Composite indicators are within safe limits."}
+        </div>
+      </section>
+
+      <section className="glass-card mx-5 mt-5 rounded-[2rem] p-5">
+        <div className="flex items-center justify-between">
+          <h2 className="font-bold">Satellite indicators</h2>
+          <span className="text-xs text-white/45">WQI inputs</span>
+        </div>
 
         <div className="mt-4 space-y-3">
           <Breakdown label="NDWI water signal" value={quality?.features?.ndwi?.toFixed?.(2) || "0.71"} />
-          <Breakdown label="Turbidity" value={`${quality?.features?.turbidity_ntu || "2.4"} NTU`} />
-          <Breakdown label="Chlorophyll-a" value={`${quality?.features?.chlorophyll_a_mg_m3 || "4.1"} mg/m³`} />
-          <Breakdown label="Temperature" value={`${quality?.features?.surface_temp_c || "14"}°C`} />
-          <Breakdown label="NO₂ pollution context" value={`${quality?.features?.no2_umol_m2 || "0.08"}`} />
+          <Breakdown label="Turbidity" value={`${quality?.features?.turbidity_ntu ?? "2.4"} NTU`} />
+          <Breakdown label="Chlorophyll-a" value={`${quality?.features?.chlorophyll_a_mg_m3 ?? "4.1"} mg/m³`} />
+          <Breakdown label="Surface temperature" value={`${quality?.features?.water_temperature_c ?? "—"}°C`} />
+          <Breakdown label="NO₂ (column)" value={`${(quality?.features?.no2_mol_m2 ?? 0).toExponential(2)} mol/m²`} />
         </div>
       </section>
 
@@ -132,8 +191,9 @@ export default function Details() {
           {!isLoading &&
             !error &&
             (risk?.warnings?.length ? risk.warnings : ["No critical warnings detected."]).map((w, i) => (
-              <div key={i} className="rounded-2xl bg-white/5 p-3 text-sm text-white/65">
-                ⚠️ {w}
+              <div key={i} className="rounded-2xl bg-white/5 p-3 text-sm text-white/70 flex items-start gap-2">
+                <AlertTriangle className="h-4 w-4 mt-0.5 text-amber-300 shrink-0" />
+                <span>{w}</span>
               </div>
             ))}
         </div>
@@ -167,6 +227,26 @@ function Breakdown({ label, value }) {
     <div className="flex justify-between border-b border-white/10 pb-3 text-sm">
       <span className="text-white/60">{label}</span>
       <span className="text-green-300">{value}</span>
+    </div>
+  );
+}
+
+function CategoryRow({ label, value }) {
+  const tone =
+    value === "Excellent"
+      ? "text-green-300"
+      : value === "Good"
+      ? "text-emerald-300"
+      : value === "Fair"
+      ? "text-amber-300"
+      : "text-red-300";
+  return (
+    <div className="flex items-center justify-between border-b border-white/10 pb-3 text-sm">
+      <div className="flex items-center gap-3 text-white/75">
+        <ShieldCheck className={`h-4 w-4 ${tone}`} />
+        <span>{label}</span>
+      </div>
+      <span className={tone}>{value}</span>
     </div>
   );
 }

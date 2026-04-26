@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Bluetooth, FlaskConical, Thermometer, Waves } from "lucide-react";
+import { ArrowLeft, Bluetooth, FlaskConical, Thermometer, Waves, ShieldCheck } from "lucide-react";
 
 const STORAGE_KEY = "terrasip-bottle-linked";
+const FILTER_LIFE_DAYS = 15;
+const FILTER_LIFE_LITERS = 60;
+const FILTER_PERCENTAGE = 65;
 
 function randomBetween(min, max) {
   return Math.round((Math.random() * (max - min) + min) * 10) / 10;
@@ -84,16 +87,57 @@ export default function Bottle() {
         )}
 
         {linked && (
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            <StatCard icon={<Waves className="h-4 w-4 text-cyan-300" />} label="Fill level" value={`${stats.fillLevel.toFixed(0)}%`} />
-            <StatCard icon={<Thermometer className="h-4 w-4 text-orange-300" />} label="Water temp" value={`${stats.waterTempC.toFixed(1)} C`} />
-            <StatCard icon={<Bluetooth className="h-4 w-4 text-green-300" />} label="Conductivity" value={`${stats.conductivity.toFixed(2)} mS/cm`} />
-            <StatCard icon={<FlaskConical className="h-4 w-4 text-violet-300" />} label="Battery" value={`${stats.battery.toFixed(0)}%`} />
-            <div className="glass-card rounded-2xl p-4 sm:col-span-2">
-              <p className="text-xs text-white/55">Last sync</p>
-              <p className="mt-1 text-sm font-semibold">{stats.lastSync}</p>
+          <>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              <StatCard icon={<Waves className="h-4 w-4 text-cyan-300" />} label="Fill level" value={`${stats.fillLevel.toFixed(0)}%`} />
+              <StatCard icon={<Thermometer className="h-4 w-4 text-orange-300" />} label="Water temp" value={`${stats.waterTempC.toFixed(1)} °C`} />
+              <StatCard icon={<Bluetooth className="h-4 w-4 text-green-300" />} label="Conductivity" value={`${stats.conductivity.toFixed(2)} mS/cm`} />
+              <StatCard icon={<FlaskConical className="h-4 w-4 text-violet-300" />} label="Battery" value={`${stats.battery.toFixed(0)}%`} />
+              <div className="glass-card rounded-2xl p-4 sm:col-span-2">
+                <p className="text-xs text-white/55">Last sync</p>
+                <p className="mt-1 text-sm font-semibold">{stats.lastSync}</p>
+              </div>
             </div>
-          </div>
+
+            <div className="glass-card mt-4 rounded-3xl p-5">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="h-5 w-5 text-green-300" />
+                  <h2 className="text-lg font-bold">Filter status</h2>
+                </div>
+                <span className="rounded-full bg-green-400/20 px-3 py-1 text-xs font-semibold text-green-200">
+                  Healthy
+                </span>
+              </div>
+
+              <div className="mt-5 grid place-items-center">
+                <div className="relative grid h-32 w-32 place-items-center rounded-full border-[8px] border-green-300/70">
+                  <div className="text-center">
+                    <p className="text-2xl font-bold">{FILTER_PERCENTAGE}%</p>
+                    <p className="text-[10px] text-green-300">Remaining</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-5 grid gap-2 text-sm text-white/75">
+                <p>Filter life remaining</p>
+                <p className="text-xs text-white/50">
+                  Estimated remaining: {FILTER_LIFE_DAYS} days or {FILTER_LIFE_LITERS} L
+                </p>
+              </div>
+
+              <div className="mt-4 rounded-2xl bg-amber-400/10 border border-amber-400/30 p-3 text-xs text-amber-100">
+                Replace your filter soon to ensure maximum protection.
+              </div>
+
+              <button className="btn-primary mt-4 w-full rounded-2xl py-3 font-semibold">
+                Order filter
+              </button>
+              <button className="mt-2 w-full rounded-2xl bg-white/10 py-3 text-sm font-semibold">
+                How to replace
+              </button>
+            </div>
+          </>
         )}
       </div>
     </div>
